@@ -260,7 +260,7 @@ void DSPCorrelateCoefs(const short* source, int samples, short coefsOut[8][2]) {
   int frameSamples;
 
   short* blockBuffer = (short*)calloc(sizeof(short), 0x3800);
-  short pcmHistBuffer[2][14] = {};
+  short pcmHistBuffer[2][14] = {0};
 
   tvec vec1;
   tvec vec2;

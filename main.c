@@ -113,10 +113,10 @@ static void THPAudioFrameHeader_swap(struct THPAudioFrameHeader* f) {
       f->channelPrevs[i][j] = av_be2ne16(f->channelPrevs[i][j]);
 }
 
-static struct THPHeader thp_header = {};
-static struct THPComponents thp_comps = {};
-static struct THPVideoInfo thp_video_info = {};
-static struct THPAudioInfo thp_audio_info = {};
+static struct THPHeader thp_header = {0};
+static struct THPComponents thp_comps = {0};
+static struct THPVideoInfo thp_video_info = {0};
+static struct THPAudioInfo thp_audio_info = {0};
 
 static AVFormatContext *fmt_ctx = NULL;
 static AVCodecContext *video_dec_ctx = NULL, *audio_dec_ctx;
@@ -156,9 +156,9 @@ static int audio_frame_count = 0;
 
 static uint32_t audio_buf_capacity = 0;
 static uint32_t audio_buf_size = 0;
-static int16_t *audio_bufs[2] = {};
+static int16_t *audio_bufs[2] = {0};
 
-static uint8_t zero_buf[32] = {};
+static uint8_t zero_buf[32] = {0};
 
 static int decode_packet(int *got_frame, int cached)
 {
@@ -213,7 +213,7 @@ static int decode_packet(int *got_frame, int cached)
 
       /* write to thp file */
       long int this_frame_off = ftell(dst_file);
-      struct THPFrameHeader thp_frame_header = {};
+      struct THPFrameHeader thp_frame_header = {0};
       thp_frame_header.nextSize = thp_header.firstFrameSize;
       thp_frame_header.prevSize = last_frame_size;
       thp_frame_header.imageSize = (uint32_t)((jpeg_size + 3) & ~0x3);
@@ -623,7 +623,7 @@ int main (int argc, char **argv)
     int16_t *sample_cur[2] = {audio_bufs[0], audio_bufs[1]};
     fseek(dst_file, thp_header.firstFrameOffset, SEEK_SET);
     uint32_t this_size = thp_header.firstFrameSize;
-    int16_t conv_samps[2][16] = {};
+    int16_t conv_samps[2][16] = {0};
     uint32_t full_rem_samples = audio_buf_size;
     for (uint32_t f = 0; f < thp_header.numFrames; ++f) {
       long int next_off = ftell(dst_file) + this_size;
@@ -639,7 +639,7 @@ int main (int argc, char **argv)
       uint32_t num_audio_packets = (audio_size - sizeof(struct THPAudioFrameHeader)) /
               (8 * (channel_layout == AV_CH_LAYOUT_STEREO ? 2 : 1));
 
-      struct THPAudioFrameHeader audio_header = {};
+      struct THPAudioFrameHeader audio_header = {0};
       if (channel_layout == AV_CH_LAYOUT_STEREO)
         audio_header.channelSize = num_audio_packets * 8;
       uint32_t num_samples = FFMIN(num_audio_packets * 14, full_rem_samples);
